@@ -1,0 +1,20 @@
+workflows:
+  android_debug:
+    name: Android Debug APK
+    max_build_duration: 30
+    environment:
+      vars:
+        JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+      android:
+        image: default
+    scripts:
+      - name: Show versions
+        script: |
+          java -version
+          ./gradlew -v || true
+      - name: Build Debug APK
+        script: |
+          chmod +x ./gradlew || true
+          ./gradlew clean assembleDebug
+    artifacts:
+      - app/build/outputs/**/*.apk
