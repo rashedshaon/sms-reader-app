@@ -6,13 +6,8 @@ workflows:
     environment:
       java: 17
     scripts:
-      - name: Show versions
-        script: |
-          java -version
-          ./gradlew -v || true
       - name: Build Debug APK
         script: |
-          chmod +x ./gradlew || true
-          ./gradlew clean assembleDebug
+          gradle clean assembleDebug
     artifacts:
       - app/build/outputs/**/*.apk
