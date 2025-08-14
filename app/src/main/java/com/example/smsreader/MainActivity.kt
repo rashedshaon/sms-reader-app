@@ -26,7 +26,8 @@ class MainActivity : AppCompatActivity() {
     private var smsList: MutableList<SmsData> = mutableListOf()
     private lateinit var uniqueId: String
 
-    data class SmsData(val address: String, val date: Long, val body: String)
+    data class SmsData(val id: String, val address: String, val date: Long, val body: String)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,11 +60,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         syncButton.setOnClickListener {
+            val sender = senderDropdown.selectedItem.toString()
             smsList.forEach { sms ->
-                SyncTask(uniqueId, sms).execute()
+                SyncTask(uniqueId, sms, sender).execute()
             }
             Toast.makeText(this, "Sync started...", Toast.LENGTH_SHORT).show()
         }
+
     }
 
     private fun checkSmsPermission(): Boolean {
@@ -84,10 +87,11 @@ class MainActivity : AppCompatActivity() {
 
         cursor?.use {
             while (it.moveToNext()) {
+                val id = it.getString(0)          // SMS unique ID
                 val address = it.getString(1)
                 val date = it.getLong(2)
                 val body = it.getString(3)
-                val sms = SmsData(address, date, body)
+                val sms = SmsData(id, address, date, body)
                 smsList.add(sms)
 
                 val tv = TextView(this)
@@ -98,10 +102,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    class SyncTask(private val uniqueId: String, private val sms: SmsData) : AsyncTask<Void, Void, Boolean>() {
+    class SyncTask(
+        private val uniqueId: String,
+        private val sms: SmsData,
+        private val sender: String
+    ) : AsyncTask<Void, Void, Boolean>() {
         override fun doInBackground(vararg params: Void?): Boolean {
             try {
-                val url = URL("https://www.import-park.com/sync-sms")
+                val url = URL("https://apitest.com/v1/sync-sms")
                 val conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "POST"
                 conn.setRequestProperty("Content-Type", "application/json")
@@ -109,6 +117,8 @@ class MainActivity : AppCompatActivity() {
 
                 val json = JSONObject()
                 json.put("unique_id", uniqueId)
+                json.put("sms_unique_id", sms.id)
+                json.put("selected_sender", sender)
                 json.put("sms_timestamp", sms.date)
                 json.put("content", sms.body)
 
