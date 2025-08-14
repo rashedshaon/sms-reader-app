@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
     ) : AsyncTask<Void, Void, Boolean>() {
         override fun doInBackground(vararg params: Void?): Boolean {
             try {
-                val url = URL("https://apitest.com/v1/sync-sms")
+                val url = URL("https://www.import-park.com/sync-sms")
                 val conn = url.openConnection() as HttpURLConnection
                 conn.requestMethod = "POST"
                 conn.setRequestProperty("Content-Type", "application/json")
