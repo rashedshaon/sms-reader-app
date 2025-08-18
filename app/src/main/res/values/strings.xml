@@ -1,3 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SMS Reader</string>
+    <string name="notif_channel_name">SMS Sync</string>
+    <string name="notif_channel_desc">Syncing sender-filtered SMS to server</string>
+    <string name="notif_title">SMS Sync running</string>
+    <string name="notif_text">Listening for incoming SMS from configured senders</string>
 </resources>
